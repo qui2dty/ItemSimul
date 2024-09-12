@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+
+  userId Int @id @default(autoincrement()) @map("userId")
+  account String @unique @map("account")
+  password String @map("password")
+  createdAt DateTime @default(now()) @map("created At")
+  updatedAt DateTime @updatedAt @map("updated At")
+
+  userInfos UserInfos?
+  characters Characters[]
+
+  @@map("Users")
+}
+
+model Characters {
+
+  characterId Int @id @default(autoincrement()) @map("characterId")
+  userId Int @map("userId")
+  name String @map("name")
+  health Int @map("health")
+  power Int @map("power")
+  gold Int @map("gold")
+
+
+    user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+    @@map("Characters")
+
+}
+
+model UserInfos {
+
+    userInfoId Int @id @default(autoincrement()) @map("userInfoId")
+    userId Int @unique @map("userId")
+    name String @map("name")
+    age Int? @map("age")
+    createdAt DateTime @default(now()) @map("created At")
+    updatedAt DateTime @updatedAt @map("updated At")
+
+    user Users @relation(fields: [userId],references: [userId], onDelete: Cascade)
+
+    @@map("userInfos")
+}
+
+model Items {
+
+  itemId Int @id @default(autoincrement()) @map("itemId")
+  name String @map("name")
+  health Int @map("health")
+  power Int @map("power")
+  price Int @map("price")
+
+
+  @@map("Items")
+}
